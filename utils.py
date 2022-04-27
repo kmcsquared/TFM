@@ -36,7 +36,7 @@ def create_court(ax, color):
     ax.set_ylim(0, 470)
 
     # General plot parameters
-    # mpl.rcParams['font.family'] = 'Avenir'
+    mpl.rcParams['font.family'] = 'Avenir'
     mpl.rcParams['font.size'] = 18
     mpl.rcParams['axes.linewidth'] = 2
 
