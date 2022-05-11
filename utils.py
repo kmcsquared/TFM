@@ -1,8 +1,3 @@
-import os
-import pandas as pd
-import numpy as np
-import streamlit as st
-import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 # Function to draw basketball court
@@ -41,103 +36,120 @@ def create_court(ax, color):
     mpl.rcParams['axes.linewidth'] = 2
 
 
-def team_data_graph(team1: pd.DataFrame, team2: pd.DataFrame):
-    """Métricas de dos queipos.
+def get_team_name_from_abbreviation(abbreviation):
 
-    Args:
-        team1 (pd.DataFrame): Datos del equipo 1 (columna derecha)
-        team2 (pd.DataFrame): Datos del equipo 2 (columna izquierda)
-    """
-    total_tiros = len(team1['PLAYER_NAME'])
-    total_jugadores = len(team1['PLAYER_NAME'].unique())
-    tiros_2pt = len(team1[team1['SHOT_TYPE'] == '2PT Field Goal'])
-    tiros_3pt = len(team1[team1['SHOT_TYPE'] == '3PT Field Goal'])
+    abbreviations_to_name = {
+        'ATL': 'Atlanta Hawks',
+        'BOS': 'Boston Celtics',
+        'CLE': 'Cleveland Cavaliers',
+        'CHI': 'Chicago Bulls',
+        'DAL': 'Dallas Mavericks',
+        'DEN': 'Denver Nuggets',
+        'GSW': 'Golden State Warriors',
+        'HOU': 'Houston Rockets',
+        'LAC': 'Los Angeles Clippers',
+        'LAL': 'Los Angeles Lakers',
+        'MIA': 'Miami Heat',
+        'MIL': 'Milwaukee Bucks',
+        'MIN': 'Minnesota Timberwolves',
+        'NJN': 'Brooklyn Nets',
+        'NYK': 'New York Knicks',
+        'ORL': 'Orlando Magic',
+        'IND': 'Indiana Pacers',
+        'PHI': 'Philadelphia 76ers',
+        'PHX': 'Phoenix Suns',
+        'POR': 'Portland Trail Blazers',
+        'SAC': 'Sacramento Kings',
+        'SAS': 'San Antonio Spurs',
+        'SEA': 'Oklahoma City Thunder',
+        'TOR': 'Toronto Raptors',
+        'UTA': 'Utah Jazz',
+        'MEM': 'Memphis Grizzlies',
+        'WAS': 'Washington Wizards',
+        'DET': 'Detroit Pistons',
+        'CHH': 'Charlotte Hornets',
+        'NOH': 'New Orleans Pelicans',
+        'CHA': 'Charlotte Hornets',
+        'NOK': 'New Orleans Pelicans',
+        'OKC': 'Oklahoma City Thunder',
+        'BKN': 'Brooklyn Nets',
+        'NOP': 'New Orleans Pelicans'
+    }
 
-    total_tiros_2= len(team2['PLAYER_NAME'])
-    total_jugadores_2 = len(team2['PLAYER_NAME'].unique())
-    tiros_2pt_2 = len(team2[team2['SHOT_TYPE'] == '2PT Field Goal'])
-    tiros_3pt_2 = len(team2[team2['SHOT_TYPE'] == '3PT Field Goal'])
+    return abbreviations_to_name[abbreviation]
 
 
-    c1,c2,c3,c4,c5,c6,c7,c8,c9,c10 = st.columns(10)
+def get_team_abbreviation_from_name(name):
 
-    with c2:
-        st.metric(label = 'Tiros realizados', value = total_tiros)
-    with c3:
-        st.metric(label = 'Tiros de 2PT', value = tiros_2pt)
-    with c4:
-        st.metric(label = 'Tiros de 3PT', value = tiros_3pt)
-    with c5:
-        st.metric(label = 'Jugadores', value = total_jugadores)
+    names_to_abbreviation = {
+        'Atlanta Hawks': 'ATL',
+        'Boston Celtics': 'BOS',
+        'Cleveland Cavaliers': 'CLE',
+        'Chicago Bulls': 'CHI',
+        'Dallas Mavericks': 'DAL',
+        'Denver Nuggets': 'DEN',
+        'Golden State Warriors': 'GSW',
+        'Houston Rockets': 'HOU',
+        'Los Angeles Clippers': 'LAC',
+        'Los Angeles Lakers': 'LAL',
+        'Miami Heat': 'MIA',
+        'Milwaukee Bucks': 'MIL',
+        'Minnesota Timberwolves': 'MIN',
+        'Brooklyn Nets': 'BKN',
+        'New York Knicks': 'NYK',
+        'Orlando Magic': 'ORL',
+        'Indiana Pacers': 'IND',
+        'Philadelphia 76ers': 'PHI',
+        'Phoenix Suns': 'PHX',
+        'Portland Trail Blazers': 'POR',
+        'Sacramento Kings': 'SAC',
+        'San Antonio Spurs': 'SAS',
+        'Oklahoma City Thunder': 'OKC',
+        'Toronto Raptors': 'TOR',
+        'Utah Jazz': 'UTA',
+        'Memphis Grizzlies': 'MEM',
+        'Washington Wizards': 'WAS',
+        'Detroit Pistons': 'DET',
+        'Charlotte Hornets': 'CHA',
+        'New Orleans Pelicans': 'NOP'
+    }
 
-    with c7:
-        st.metric(label = 'Tiros realizados', value = total_tiros_2)
-    with c8:
-        st.metric(label = 'Tiros de 2PT', value = tiros_2pt_2)
-    with c9:
-        st.metric(label = 'Tiros de 3PT', value = tiros_3pt_2)
-    with c10:
-        st.metric(label = 'Jugadores', value = total_jugadores_2)
+    return names_to_abbreviation[name]
 
-def get_shot_percentages(df):
 
-    all_shots_percentage = round(100*sum(df['SHOT_MADE_FLAG']) / len(df), 2)
-    two_pts = df[df['SHOT_TYPE'] == '2PT Field Goal']
-    two_pt_percentage = round(100*sum(two_pts['SHOT_MADE_FLAG']) / len(two_pts), 2)
-    three_pts = df[df['SHOT_TYPE'] == '3PT Field Goal']
-    three_pt_percentage = round(100*sum(three_pts['SHOT_MADE_FLAG']) / len(three_pts), 2)
 
-    return [all_shots_percentage, two_pt_percentage, three_pt_percentage]
 
 # https://teamcolorcodes.com/nba-team-color-codes/
-NBA_COLORS = {'Atlanta Hawks': '#E03A3E',
-              'Boston Celtics': '#007A33',
-              'Brooklyn Nets': '#000000',
-              'Charlotte Hornets': '#1D1160',
-              'Chicago Bulls': '#CE1141',
-              'Cleveland Cavaliers': '#860038',
-              'Dallas Mavericks': '#00538C',
-              'Denver Nuggets': '#0E2240',
-              'Detroit Pistons': '#C8102E',
-              'Golden State Warriors': '#1D428A',
-              'Houston Rockets': '#CE1141',
-              'Indiana Pacers': '#002D62',
-              'LA Clippers': '#C8102E',
-              'Los Angeles Lakers': '#552583',
-              'Memphis Grizzlies': '#5D76A9',
-              'Miami Heat': '#98002E',
-              'Milwaukee Bucks': '#00471B',
-              'Minnesota Timberwolves': '#0C2340',
-              'New Orleans Pelicans': '#0C2340',
-              'New York Knicks': '#006BB6',
-              'Oklahoma City Thunder': '#007AC1',
-              'Orlando Magic': '#0077C0',
-              'Philadelphia 76ers': '#006BB6',
-              'Phoenix Suns': '#1D1160',
-              'Portland Trail Blazers': '#E03A3E',
-              'Sacramento Kings': '#5A2D81',
-              'San Antonio Spurs': '#C4CED4',
-              'Toronto Raptors': '#CE1141',
-              'Utah Jazz': '#002B5C',
-              'Washington Wizards': '#002B5C'}
+NBA_COLORS = {
+    'Atlanta Hawks': '#E03A3E',
+    'Boston Celtics': '#007A33',
+    'Brooklyn Nets': '#000000',
+    'Charlotte Hornets': '#1D1160',
+    'Chicago Bulls': '#CE1141',
+    'Cleveland Cavaliers': '#860038',
+    'Dallas Mavericks': '#00538C',
+    'Denver Nuggets': '#0E2240',
+    'Detroit Pistons': '#C8102E',
+    'Golden State Warriors': '#1D428A',
+    'Houston Rockets': '#CE1141',
+    'Indiana Pacers': '#002D62',
+    'LA Clippers': '#C8102E',
+    'Los Angeles Lakers': '#552583',
+    'Memphis Grizzlies': '#5D76A9',
+    'Miami Heat': '#98002E',
+    'Milwaukee Bucks': '#00471B',
+    'Minnesota Timberwolves': '#0C2340',
+    'New Orleans Pelicans': '#0C2340',
+    'New York Knicks': '#006BB6',
+    'Oklahoma City Thunder': '#007AC1',
+    'Orlando Magic': '#0077C0',
+    'Philadelphia 76ers': '#006BB6',
+    'Phoenix Suns': '#1D1160',
+    'Portland Trail Blazers': '#E03A3E',
+    'Sacramento Kings': '#5A2D81',
+    'San Antonio Spurs': '#C4CED4',
+    'Toronto Raptors': '#CE1141',
+    'Utah Jazz': '#002B5C',
+    'Washington Wizards': '#002B5C'
+}
 
-
-def draw_league_team_comparison(percentages, team):
-
-        X = np.arange(3)
-        fig = plt.figure(figsize=(2.5, 2))
-        ax4 = fig.add_axes([0,0,1,1])
-        ax4.bar(X, percentages[0], color = '#B4975A', width = 0.25)
-        ax4.bar(X + 0.25, percentages[1], color = NBA_COLORS[team], width = 0.25)
-        
-        ax4.set_ylabel('Porcentaje de Acierto (%)', fontsize=10)
-        ax4.tick_params(axis='y', which='major', labelsize=10)
-        ax4.legend(labels=['Resto de la Liga', team], prop={'size': 4.5})
-        ax4.set_xticks(X+0.125)
-        ax4.set_xticklabels(['Tiros de Campo', 'Tiros de 2', 'Tiros de 3'], fontsize=8)
-        # ax4.set_yticks(np.arange(0, 65, 10), fontsize=4)
-
-        ax4.bar_label(ax4.containers[0], fontsize=4, padding=-10, color='white', weight='bold')
-        ax4.bar_label(ax4.containers[1], fontsize=4, padding=-10, color='white', weight='bold')
-
-        st.pyplot(fig=fig)
