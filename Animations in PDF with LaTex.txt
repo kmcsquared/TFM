@@ -1,0 +1,30 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{animate}
+
+\title{GIF Test}
+\begin{document}
+
+\maketitle
+
+% GIFS IN LATEX:
+% https://tex.stackexchange.com/questions/240243/getting-gif-and-or-moving-images-into-a-latex-presentation
+
+% GIF TO MULTIPLE PNGs
+% https://imagen.online-convert.com/es/convertir/gif-a-png
+
+% PREFER SECOND OPTION (FIGURE)
+
+\section{Introduction} 
+\begin{frame}{}
+  % Having giphy-0.png up to giphy-16.png in folder
+  \animategraphics[loop,controls,width=\linewidth]{10}{giphy-}{0}{16}
+\end{frame}
+
+\section{Introduction} 
+\begin{figure}[!ht]
+  % Having giphy-0.png up to giphy-16.png in folder
+  \animategraphics[loop,controls,width=\linewidth]{10}{giphy-}{0}{16}
+\end{figure}
+\end{document}
